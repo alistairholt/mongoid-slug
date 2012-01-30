@@ -68,6 +68,7 @@ module Mongoid #:nodoc:
       #
       def slug(*fields, &block)
         options             = fields.extract_options!
+        set_callbacks       = options[:set_callbacks] || true
         self.slug_scope     = options[:scope]
         self.slug_name      = options[:as] || :slug
         self.slugged_fields = fields.map(&:to_s)
@@ -88,10 +89,12 @@ module Mongoid #:nodoc:
           index(slug_name, :unique => !slug_scope)
         end
 
-        if options[:permanent]
-          before_create :generate_slug
-        else
-          before_save :generate_slug
+        if set_callbacks
+          if options[:permanent]
+            before_create :generate_slug
+          else
+            before_save :generate_slug
+          end
         end
 
         # Build a finder based on the slug name.
