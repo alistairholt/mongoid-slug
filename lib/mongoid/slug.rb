@@ -122,6 +122,10 @@ module Mongoid #:nodoc:
       end
     end
 
+    def generate_slug!
+      write_attribute(slug_name, find_unique_slug)
+    end
+
     private
 
     def find_unique_slug
@@ -178,10 +182,6 @@ module Mongoid #:nodoc:
          (!new_record? && slugged_fields_changed?)
         generate_slug!
       end
-    end
-
-    def generate_slug!
-      write_attribute(slug_name, find_unique_slug)
     end
 
     def slugged_fields_changed?
